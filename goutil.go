@@ -2,11 +2,11 @@ package goutil
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"sort"
 	"strings"
 
-	log "github.com/maerics/golog"
 	"golang.org/x/exp/constraints"
 )
 
@@ -22,10 +22,17 @@ func MustEnv(varname string) string {
 }
 
 func MustJson(x any, pretty ...bool) string {
+	var bs []byte
+	var err error
 	if len(pretty) > 0 && pretty[0] {
-		return string(log.Must1(json.MarshalIndent(x, "", "  ")))
+		bs, err = json.MarshalIndent(x, "", "  ")
+	} else {
+		bs, err = json.Marshal(x)
 	}
-	return string(log.Must1(json.Marshal(x)))
+	if err != nil {
+		panic(err)
+	}
+	return string(bs)
 }
 
 func Keys[T comparable](m map[T]any) []T {
