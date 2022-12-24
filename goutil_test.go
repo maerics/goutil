@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
+type JsonExample struct {
+	x        any
+	expected string
+}
+
 func TestMustJson(t *testing.T) {
-	examples := []struct {
-		x        any
-		expected string
-	}{
+	for i, eg := range []JsonExample{
 		{nil, "null"},
 		{123, "123"},
 		{1.2, "1.2"},
@@ -18,32 +20,27 @@ func TestMustJson(t *testing.T) {
 		{[]any{0, true, "foo"}, `[0,true,"foo"]`},
 		{map[string]any{"foo": 1, "bar": []int{1, 2, 3}},
 			`{"bar":[1,2,3],"foo":1}`},
-	}
-
-	for i, eg := range examples {
-		actual := MustJson(eg.x)
-		if actual != eg.expected {
-			t.Errorf("example %#v, wanted %q, got %q", i+1, eg.expected, actual)
-		}
+	} {
+		assertEqual(t, i, eg.expected, MustJson(eg.x))
 	}
 }
 
 func TestMustJsonPretty(t *testing.T) {
-	examples := []struct {
-		x        any
-		expected string
-	}{
+	for i, eg := range []JsonExample{
+		{true, "true"},
 		{[]any{0, true, "foo"},
 			newlines(`[\  0,\  true,\  "foo"\]`)},
 		{map[string]any{"foo": 1, "bar": []int{1, 2, 3}},
 			newlines(`{\  "bar": [\    1,\    2,\    3\  ],\  "foo": 1\}`)},
+	} {
+		assertEqual(t, i, eg.expected, MustJson(eg.x, true))
 	}
+}
 
-	for i, eg := range examples {
-		actual := MustJson(eg.x, true)
-		if actual != eg.expected {
-			t.Errorf("example %#v\nwanted %q,\n   got %q", i+1, eg.expected, actual)
-		}
+func assertEqual(t *testing.T, exampleIndex int, expected, actual any) {
+	if actual != expected {
+		t.Errorf("example %#v, wanted %#v, got %#v",
+			exampleIndex+1, expected, actual)
 	}
 }
 
