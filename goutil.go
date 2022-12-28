@@ -21,6 +21,14 @@ func MustEnv(varname string) string {
 	return value
 }
 
+func Getenv(name, fallback string) string {
+	value := strings.TrimSpace(os.Getenv(name))
+	if value == "" {
+		return fallback
+	}
+	return value
+}
+
 func MustJson(x any, pretty ...bool) string {
 	var bs []byte
 	var err error
