@@ -5,6 +5,18 @@ import (
 	"testing"
 )
 
+func assertEqual(t *testing.T, exampleIndex int, expected, actual any) {
+	if actual != expected {
+		t.Errorf("example %#v, wanted %#v, got %#v",
+			exampleIndex+1, expected, actual)
+	}
+}
+
+func newlines(s string) string {
+	return string(bytes.ReplaceAll(
+		[]byte(s), []byte{'\\'}, []byte{'\n'}))
+}
+
 type JsonExample struct {
 	x        any
 	expected string
@@ -37,14 +49,11 @@ func TestMustJsonPretty(t *testing.T) {
 	}
 }
 
-func assertEqual(t *testing.T, exampleIndex int, expected, actual any) {
-	if actual != expected {
-		t.Errorf("example %#v, wanted %#v, got %#v",
-			exampleIndex+1, expected, actual)
+func ToSnakeTest(t *testing.T) {
+	for i, eg := range []struct{ x, expected string }{
+		{"Id", "id"},
+		{"CreatedAt", "created_at"},
+	} {
+		assertEqual(t, i, eg.expected, ToSnake(eg.x))
 	}
-}
-
-func newlines(s string) string {
-	return string(bytes.ReplaceAll(
-		[]byte(s), []byte{'\\'}, []byte{'\n'}))
 }

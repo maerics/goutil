@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/iancoleman/strcase"
 	"golang.org/x/exp/constraints"
 )
 
@@ -41,6 +42,10 @@ func MustJson(x any, pretty ...bool) string {
 		panic(err)
 	}
 	return string(bs)
+}
+
+func ToSnake(s string) string {
+	return strcase.ToSnake(s)
 }
 
 func Keys[T comparable](m map[T]any) []T {
