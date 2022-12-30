@@ -28,7 +28,7 @@ func MustEnv(varname string) string {
 	return value
 }
 
-func Keys[T comparable](m map[T]any) []T {
+func Keys[T comparable, U any](m map[T]U) []T {
 	keys := make([]T, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
