@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/iancoleman/strcase"
 	"golang.org/x/exp/constraints"
 )
 
@@ -27,10 +26,6 @@ func MustEnv(varname string) string {
 		log.Fatalf("the environment variable %q must be set", varname)
 	}
 	return value
-}
-
-func ToSnake(s string) string {
-	return strcase.ToSnake(s)
 }
 
 func Keys[T comparable](m map[T]any) []T {
