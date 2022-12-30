@@ -20,17 +20,37 @@ func MustJson(x any, pretty ...bool) string {
 	return string(bs)
 }
 
-// Marshals maps to JSON with specified key order.
+// Marshals a JSON object using the given key order and values from a slice or map.
+// The "Values" and "Map" fields are mutually exclusive.
 type OrderedJsonObj struct {
-	Map  map[string]any
-	Keys []string
+	Keys   []string
+	Values []any
+	Map    map[string]any
+	Nulls  bool
 }
 
 func (o OrderedJsonObj) MarshalJSON() ([]byte, error) {
+	if o.Values != nil && o.Map != nil {
+		panic(fmt.Errorf("OrderedJsonObj cannot have both Values and Map"))
+	}
+	if o.Values == nil && o.Map == nil {
+		panic(fmt.Errorf("OrderedJsonObj must have either Values or Map"))
+	}
+
 	buf := &bytes.Buffer{}
 	buf.WriteByte('{')
-	for _, key := range o.Keys {
-		if bs, err := json.Marshal(o.Map[key]); err != nil {
+	for i, key := range o.Keys {
+		var value any
+		if o.Map != nil {
+			value = o.Map[key]
+		} else if i < len(o.Values) {
+			value = o.Values[i]
+		}
+		if value == nil && !o.Nulls {
+			continue
+		}
+
+		if bs, err := json.Marshal(value); err != nil {
 			return nil, err
 		} else {
 			fmt.Fprintf(buf, "%q:%v,", key, string(bs))

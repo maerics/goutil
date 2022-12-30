@@ -6,13 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type JsonExample struct {
-	x        any
-	expected string
-}
-
 func TestMustJson(t *testing.T) {
-	for _, eg := range []JsonExample{
+	for _, eg := range []struct {
+		x        any
+		expected string
+	}{
 		{nil, "null"},
 		{123, "123"},
 		{1.2, "1.2"},
@@ -27,7 +25,10 @@ func TestMustJson(t *testing.T) {
 }
 
 func TestMustJsonPretty(t *testing.T) {
-	for _, eg := range []JsonExample{
+	for _, eg := range []struct {
+		x        any
+		expected string
+	}{
 		{true, "true"},
 		{[]any{0, true, "foo"},
 			newlines(`[\  0,\  true,\  "foo"\]`)},
@@ -35,5 +36,45 @@ func TestMustJsonPretty(t *testing.T) {
 			newlines(`{\  "bar": [\    1,\    2,\    3\  ],\  "foo": 1\}`)},
 	} {
 		assert.Equal(t, eg.expected, MustJson(eg.x, true))
+	}
+}
+
+func TestOrderedJsonMap(t *testing.T) {
+	for _, eg := range []struct {
+		m        map[string]any
+		v        []any
+		keys     []string
+		nulls    bool
+		expected string
+	}{
+		// Maps
+		{m: map[string]any{"name": "Mike", "alpha": "bravo"},
+			keys:     []string{"name", "alpha"},
+			expected: `{"name":"Mike","alpha":"bravo"}`},
+		{m: map[string]any{"name": "Mike"},
+			keys:     []string{"name", "alpha"},
+			expected: `{"name":"Mike"}`},
+		{m: map[string]any{"name": "Mike"},
+			keys:     []string{"name", "alpha"},
+			nulls:    true,
+			expected: `{"name":"Mike","alpha":null}`},
+		// Slices
+		{v: []any{"Mike", "bravo"},
+			keys:     []string{"name", "alpha"},
+			expected: `{"name":"Mike","alpha":"bravo"}`},
+		{v: []any{"Mike"},
+			keys:     []string{"name", "alpha"},
+			expected: `{"name":"Mike"}`},
+		{v: []any{"Mike"},
+			keys:     []string{"name", "alpha"},
+			nulls:    true,
+			expected: `{"name":"Mike","alpha":null}`},
+	} {
+		assert.Equal(t, eg.expected, MustJson(OrderedJsonObj{
+			Keys:   eg.keys,
+			Values: eg.v,
+			Map:    eg.m,
+			Nulls:  eg.nulls,
+		}))
 	}
 }
