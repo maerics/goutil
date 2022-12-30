@@ -1,7 +1,6 @@
 package goutil
 
 import (
-	"encoding/json"
 	"log"
 	"os"
 	"sort"
@@ -14,14 +13,6 @@ import (
 type A []any
 type M map[string]any
 
-func MustEnv(varname string) string {
-	value := strings.TrimSpace(os.Getenv(varname))
-	if value == "" {
-		log.Fatalf("the environment variable %q must be set", varname)
-	}
-	return value
-}
-
 func Getenv(name, fallback string) string {
 	value := strings.TrimSpace(os.Getenv(name))
 	if value == "" {
@@ -30,18 +21,12 @@ func Getenv(name, fallback string) string {
 	return value
 }
 
-func MustJson(x any, pretty ...bool) string {
-	var bs []byte
-	var err error
-	if len(pretty) > 0 && pretty[0] {
-		bs, err = json.MarshalIndent(x, "", "  ")
-	} else {
-		bs, err = json.Marshal(x)
+func MustEnv(varname string) string {
+	value := strings.TrimSpace(os.Getenv(varname))
+	if value == "" {
+		log.Fatalf("the environment variable %q must be set", varname)
 	}
-	if err != nil {
-		panic(err)
-	}
-	return string(bs)
+	return value
 }
 
 func ToSnake(s string) string {
