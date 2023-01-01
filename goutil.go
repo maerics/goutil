@@ -9,9 +9,6 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type A []any
-type M map[string]any
-
 func Getenv(name, fallback string) string {
 	value := strings.TrimSpace(os.Getenv(name))
 	if value == "" {
