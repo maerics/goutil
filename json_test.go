@@ -1,6 +1,7 @@
 package goutil
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -58,6 +59,9 @@ func TestOrderedJsonMap(t *testing.T) {
 			keys:     []string{"name", "alpha"},
 			nulls:    true,
 			expected: `{"name":"Mike","alpha":null}`},
+		{m: map[string]any{"name": "Mike", "settings": json.RawMessage(`{"darkmode":true}`)},
+			keys:     []string{"name", "settings"},
+			expected: `{"name":"Mike","settings":{"darkmode":true}}`},
 		// Slices
 		{v: []any{"Mike", "bravo"},
 			keys:     []string{"name", "alpha"},
