@@ -8,7 +8,11 @@ import (
 	"github.com/maerics/golog"
 )
 
-func MustExec(command string, args ...string) string {
+func MustExec(command string) string {
+	return MustExecArgs("bash", "-c", command)
+}
+
+func MustExecArgs(command string, args ...string) string {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
 	cmd := exec.Command(command, args...)
