@@ -73,6 +73,13 @@ func TestOrderedJsonMap(t *testing.T) {
 			keys:     []string{"name", "alpha"},
 			nulls:    true,
 			expected: `{"name":"Mike","alpha":null}`},
+		{v: make([]any, 2),
+			keys:     []string{"name", "alpha"},
+			nulls:    true,
+			expected: `{"name":null,"alpha":null}`},
+		{v: make([]any, 2),
+			keys:     []string{"name", "alpha"},
+			expected: `{}`},
 	} {
 		assert.Equal(t, eg.expected, MustJson(OrderedJsonObj{
 			Keys:   eg.keys,

@@ -57,6 +57,10 @@ func (o OrderedJsonObj) MarshalJSON() ([]byte, error) {
 		}
 	}
 	bs := buf.Bytes()
-	bs[len(bs)-1] = '}'
+	if len(bs) > 1 {
+		bs[len(bs)-1] = '}'
+	} else {
+		bs = append(bs, '}')
+	}
 	return bs, nil
 }
