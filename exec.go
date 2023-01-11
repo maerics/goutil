@@ -2,6 +2,7 @@ package goutil
 
 import (
 	"bytes"
+	"io"
 	"os/exec"
 	"strings"
 
@@ -13,9 +14,14 @@ func MustExec(command string) string {
 }
 
 func MustExecArgs(command string, args ...string) string {
+	return MustExecArgsStdin(command, args, nil)
+}
+
+func MustExecArgsStdin(command string, args []string, r io.Reader) string {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
 	cmd := exec.Command(command, args...)
+	cmd.Stdin = r
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 	if err := cmd.Run(); err != nil {

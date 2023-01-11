@@ -1,6 +1,7 @@
 package goutil
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,4 +20,10 @@ func TestMustExecArgs(t *testing.T) {
 	assert.Equal(t, "\n", MustExecArgs("echo"))
 	assert.Equal(t, "Hello", MustExecArgs("echo", "-n", "Hello"))
 	assert.Equal(t, "Hello\n", MustExecArgs("echo", "Hello"))
+}
+
+func TestMustExecStdin(t *testing.T) {
+	assert.Equal(t, "", MustExecArgsStdin("cat", nil, nil))
+	assert.Equal(t, "hello", MustExecArgsStdin("cat", nil, strings.NewReader("hello")))
+	assert.Equal(t, "hello\n", MustExecArgsStdin("cat", nil, strings.NewReader("hello\n")))
 }
