@@ -12,7 +12,7 @@ func TestMustExec(t *testing.T) {
 	assert.Equal(t, "\n", MustExec("echo"))
 	assert.Equal(t, "Hello", MustExec("echo -n Hello"))
 	assert.Equal(t, "Hello\n", MustExec("echo Hello"))
-	assert.Equal(t, "d41d8cd98f00b204e9800998ecf8427e  -\n", MustExec("echo -n | md5sum"))
+	assert.Equal(t, "d41d8cd98f00b204e9800998ecf8427e\n", MustExec("echo -n | dgst md5"))
 }
 
 func TestMustExecArgs(t *testing.T) {
