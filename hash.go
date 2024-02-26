@@ -6,13 +6,13 @@ import (
 	"fmt"
 )
 
-type Map map[string]any
+type Hash map[string]any
 
-func (m Map) Value() (driver.Value, error) {
+func (m Hash) Value() (driver.Value, error) {
 	return json.Marshal(m)
 }
 
-func (m *Map) Scan(src interface{}) error {
+func (m *Hash) Scan(src interface{}) error {
 	if src == nil {
 		return nil
 	}
@@ -22,12 +22,12 @@ func (m *Map) Scan(src interface{}) error {
 		return fmt.Errorf("expected byte []byte, got %T", src)
 	}
 
-	var mx Map
+	var mx Hash
 	err := json.Unmarshal(bs, &mx)
 	if err != nil {
 		return err
 	}
 
-	*m = Map(mx)
+	*m = Hash(mx)
 	return nil
 }
